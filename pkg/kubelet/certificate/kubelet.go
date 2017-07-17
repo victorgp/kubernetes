@@ -27,6 +27,7 @@ import (
 	clientset "k8s.io/client-go/kubernetes"
 	clientcertificates "k8s.io/client-go/kubernetes/typed/certificates/v1beta1"
 	"k8s.io/kubernetes/pkg/kubelet/apis/kubeletconfig"
+    utilflag "k8s.io/apiserver/pkg/util/flag"
 )
 
 // NewKubeletServerCertificateManager creates a certificate manager for the kubelet when retrieving a server certificate
@@ -45,6 +46,12 @@ func NewKubeletServerCertificateManager(kubeClient clientset.Interface, kubeCfg 
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize server certificate store: %v", err)
 	}
+
+    cipherSuites, err := utilflag.CipherSuites(kubeCfg.CipherSuites)
+    if err != nil {
+        return nil, err
+    }
+
 	m, err := NewManager(&Config{
 		Name: "server",
 		CertificateSigningRequestClient: certSigningRequestClient,
@@ -71,6 +78,7 @@ func NewKubeletServerCertificateManager(kubeClient clientset.Interface, kubeCfg 
 			certificates.UsageServerAuth,
 		},
 		CertificateStore: certificateStore,
+        CipherSuites: cipherSuites,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize server certificate manager: %v", err)

@@ -59,6 +59,8 @@ type Manager interface {
 	// certificate manager, as well as the associated certificate and key data
 	// in PEM format.
 	Current() *tls.Certificate
+    // Returns the configured cipher suites
+    GetCipherSuites() []uint16
 }
 
 // Config is the set of configuration parameters available for a new Manager.
@@ -104,6 +106,9 @@ type Config struct {
 	// initialized using a generic, multi-use cert/key pair which will be
 	// quickly replaced with a unique cert/key pair.
 	BootstrapKeyPEM []byte
+    // CipherSuites is the list of allowed cipher suites for the server.
+    // Values are from tls package constants (https://golang.org/pkg/crypto/tls/#pkg-constants).
+    CipherSuites []uint16
 }
 
 // Store is responsible for getting and updating the current certificate.
@@ -137,6 +142,7 @@ type manager struct {
 	rotationDeadline         time.Time
 	forceRotation            bool
 	certificateExpiration    prometheus.Gauge
+    cipherSuites             []uint16
 }
 
 // NewManager returns a new certificate manager. A certificate manager is
@@ -174,9 +180,15 @@ func NewManager(config *Config) (Manager, error) {
 		cert:                     cert,
 		forceRotation:            forceRotation,
 		certificateExpiration:    certificateExpiration,
+        cipherSuites:             config.CipherSuites,
 	}
 
 	return &m, nil
+}
+
+// Returns the configured cipher suites
+func (m *manager) GetCipherSuites() []uint16 {
+    return m.cipherSuites
 }
 
 // Current returns the currently selected certificate from the certificate
