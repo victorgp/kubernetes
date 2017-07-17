@@ -211,6 +211,9 @@ type KubeletConfiguration struct {
 	// tlsPrivateKeyFile is the ile containing x509 private key matching
 	// tlsCertFile.
 	TLSPrivateKeyFile string
+    // CipherSuites is the list of allowed cipher suites for the server.
+    // Values are from tls package constants (https://golang.org/pkg/crypto/tls/#pkg-constants).
+    CipherSuites string
 	// certDirectory is the directory where the TLS certs are located (by
 	// default /var/run/kubernetes). If tlsCertFile and tlsPrivateKeyFile
 	// are provided, this flag will be ignored.

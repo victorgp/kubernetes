@@ -190,6 +190,11 @@ func (c *kubeletConfiguration) addFlags(fs *pflag.FlagSet) {
 	fs.StringVar(&c.CertDirectory, "cert-dir", c.CertDirectory, "The directory where the TLS certs are located. "+
 		"If --tls-cert-file and --tls-private-key-file are provided, this flag will be ignored.")
 
+    fs.StringVar(&c.CipherSuites, "tls-cipher-suites", c.CipherSuites,
+        "Comma-separated list of cipher suites for the server. "+
+        "Values are from tls package constants (https://golang.org/pkg/crypto/tls/#pkg-constants). "+
+        "If ommited, the default Go cipher suites will be used")
+
 	fs.StringVar(&c.RootDirectory, "root-dir", c.RootDirectory, "Directory path for managing kubelet files (volume mounts,etc).")
 	fs.StringVar(&c.SeccompProfileRoot, "seccomp-profile-root", c.SeccompProfileRoot, "Directory path for seccomp profiles.")
 	fs.BoolVar(&c.AllowPrivileged, "allow-privileged", c.AllowPrivileged, "If true, allow containers to request privileged mode.")

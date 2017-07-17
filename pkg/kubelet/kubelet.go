@@ -717,6 +717,7 @@ func NewMainKubelet(kubeCfg *componentconfig.KubeletConfiguration, kubeDeps *Kub
 			}
 			return cert, nil
 		}
+        kubeDeps.TLSOptions.Config.CipherSuites = klet.serverCertificateManager.GetCipherSuites()
 	}
 
 	klet.probeManager = prober.NewManager(
