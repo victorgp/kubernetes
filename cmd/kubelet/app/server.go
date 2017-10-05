@@ -565,11 +565,7 @@ func InitializeTLS(kf *options.KubeletFlags, kc *kubeletconfiginternal.KubeletCo
 		}
 	}
 
-	cipherSuites, err := flag.CipherSuites(kc.CipherSuites)
-	if err != nil {
-		return nil, err
-	}
-
+	cipherSuites := flag.CipherSuites(kc.CipherSuites)
 	tlsOptions := &server.TLSOptions{
 		Config: &tls.Config{
 			// Can't use SSLv3 because of POODLE and BEAST
